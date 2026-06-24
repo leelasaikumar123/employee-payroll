@@ -1,6 +1,7 @@
 package com.bridgelabzs;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -81,5 +82,26 @@ public Employee getEmployeePayrollDataByName() {
 	e.printStackTrace();
 }
  return emp;  
+}
+public List<Employee> getEmployeesBetweenDates(Date from,Date to){
+	List<Employee> emplist=new ArrayList<>();
+	String getEmployeesBetweenDatesVariable="select * from employee_payroll where start_Date between ? and ?";
+	try {
+		Connection con=DBConnection.getConnection();
+		PreparedStatement ps=con.prepareStatement(getEmployeesBetweenDatesVariable);
+		ps.setDate(1, from);
+		ps.setDate(2, to);
+		ResultSet res=ps.executeQuery();
+		while(res.next()) {
+			emplist.add(new Employee(res.getInt(1), res.getString(2),res.getString(3).charAt(0), res.getInt(4),res.getDate(5)));
+		}
+		
+	} catch (EmployeePayRollException | SQLException e) {
+		
+		e.printStackTrace();
+	}
+	
+	
+	return emplist;
 }
 }

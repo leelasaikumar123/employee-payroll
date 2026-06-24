@@ -3,6 +3,7 @@ package com.bridgelabzs;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Date;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,20 @@ class EmployeePayrollSystemTest {
 		EmployeePayrollSystem eps=new EmployeePayrollSystem();
 		Employee actual=eps.getEmployeePayrollDataByName();
 		assertEquals(new Employee(1,"Tanuja",'F',30000,Date.valueOf("2026-01-01")),actual);
+	}
+	
+	@Test
+	void getEmployeesBetweenDatesTest() {
+		List<Employee> expected = Arrays.asList(
+			    new Employee(1, "Tanuja", 'F', 30000, Date.valueOf("2026-01-01")),
+			    new Employee(2, "Gopi Chand", 'M', 20000, Date.valueOf("2026-01-05")),
+			    new Employee(3, "Leela Sai Kumar", 'M', 10000, Date.valueOf("2025-09-29")),
+			    new Employee(4, "Usha Kiran", 'F', 90000, Date.valueOf("2026-01-15")),
+			    new Employee(5, "Anand Sai", 'M', 100000, Date.valueOf("2025-09-19"))
+			);
+		EmployeePayrollSystem eps=new EmployeePayrollSystem();
+		List<Employee> actaul=eps.getEmployeesBetweenDates(Date.valueOf("1970-01-01"),Date.valueOf("2027-01-01"));
+		assertEquals(expected,actaul);
 	}
 	
 }
