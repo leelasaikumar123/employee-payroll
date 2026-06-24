@@ -2,6 +2,7 @@ package com.bridgelabzs;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -46,6 +47,18 @@ public int updateAnSqlERecord() {
 	Connection con=DBConnection.getConnection();
 	Statement st=con.createStatement();
 	n=st.executeUpdate("update employee_payroll set salary=30000 where name='Tanuja' ");
+} catch (EmployeePayRollException | SQLException e) {
+	
+	e.printStackTrace();
+}
+ return n;  
+}
+public int updateAnSqlERecordUsingPreparedStatement() {
+	int n=-1;
+   try {
+	Connection con=DBConnection.getConnection();
+	PreparedStatement ps=con.prepareStatement("update employee_payroll set salary=30000 where name='Tanuja' ");
+	n=ps.executeUpdate();
 } catch (EmployeePayRollException | SQLException e) {
 	
 	e.printStackTrace();

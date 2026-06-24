@@ -21,4 +21,11 @@ class EmployeePayrollSystemTest {
 		int actual=eps.updateAnSqlERecord();
 		assertEquals(1,actual);
 	}
+	
+	@Test
+	void updateSqlRecordUsingPreparedStatementTest() {
+		EmployeePayrollSystem eps=new EmployeePayrollSystem();
+		int actual=eps.updateAnSqlERecordUsingPreparedStatement();
+		assertEquals(1,actual);
+	}
 }
