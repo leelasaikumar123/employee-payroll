@@ -2,6 +2,7 @@ package com.bridgelabzs;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -28,4 +29,11 @@ class EmployeePayrollSystemTest {
 		int actual=eps.updateAnSqlERecordUsingPreparedStatement();
 		assertEquals(1,actual);
 	}
+	@Test
+	void getEmployeePayrollDataByNameTest() {
+		EmployeePayrollSystem eps=new EmployeePayrollSystem();
+		Employee actual=eps.getEmployeePayrollDataByName();
+		assertEquals(new Employee(1,"Tanuja",'F',30000,Date.valueOf("2026-01-01")),actual);
+	}
+	
 }

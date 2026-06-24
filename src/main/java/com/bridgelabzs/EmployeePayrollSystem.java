@@ -65,4 +65,21 @@ public int updateAnSqlERecordUsingPreparedStatement() {
 }
  return n;  
 }
+public Employee getEmployeePayrollDataByName() {
+	Employee emp=null;
+	String retriveEmployeeByNameQuery="select * from employee_payroll where name = ?";
+   try {
+	Connection con=DBConnection.getConnection();
+	PreparedStatement ps=con.prepareStatement(retriveEmployeeByNameQuery);
+	ps.setString(1,"Tanuja");
+	ResultSet res=ps.executeQuery();
+	res.next();
+	emp=new Employee(res.getInt(1), res.getString(2),res.getString(3).charAt(0), res.getInt(4),res.getDate(5));
+	
+} catch (EmployeePayRollException | SQLException e) {
+	
+	e.printStackTrace();
+}
+ return emp;  
+}
 }

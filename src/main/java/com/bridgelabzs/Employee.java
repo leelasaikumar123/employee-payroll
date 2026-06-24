@@ -66,6 +66,10 @@ public String toString() {
 	return "Employee [id=" + id + ", name=" + name + ", gender=" + gender + ", salary=" + salary + ", start_Date="
 			+ start_Date + "]";
 }
-
-
-}
+	@Override
+		public boolean equals(Object obj) {
+			Employee emp2=(Employee) obj;
+			return emp2.getId()==id && emp2.getGender()==gender && start_Date.equals(emp2.start_Date) && emp2.getSalary()==salary;
+		}
+	
+	}
