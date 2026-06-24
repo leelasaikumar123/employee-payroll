@@ -2,7 +2,11 @@ package com.bridgelabzs;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EmployeePayrollSystem {
 
@@ -18,4 +22,23 @@ public class EmployeePayrollSystem {
 
 	}
 
+public List<Employee> readEmployeeData(){
+	List<Employee> emplist=new ArrayList<>();
+	try {
+		Connection con=DBConnection.getConnection();
+		Statement st=con.createStatement();
+		ResultSet res=st.executeQuery("select * from employee_payroll");
+		while(res.next()) {
+			emplist.add(new Employee(res.getInt(1), res.getString(2),res.getString(3).charAt(0), res.getInt(4),res.getDate(5)));
+		}
+	} catch (EmployeePayRollException | SQLException e) {
+		
+		e.printStackTrace();
+	}
+	for(Employee emp:emplist) {
+		System.out.println(emp);
+	}
+	return emplist;
+	
+}
 }

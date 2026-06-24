@@ -1,0 +1,71 @@
+package com.bridgelabzs;
+
+import java.sql.Date;
+
+public class Employee {
+private int id;
+private String name;
+private char gender;
+private int salary;
+private Date start_Date;
+
+public Employee() {
+	super();
+}
+public Employee(int id, String name, char gender, int salary, Date start_Date) {
+	super();
+	this.id = id;
+	this.name = name;
+	this.gender = gender;
+	this.salary = salary;
+	this.start_Date = start_Date;
+}
+
+public int getId() {
+	return id;
+}
+
+public void setId(int id) {
+	this.id = id;
+}
+
+public String getName() {
+	return name;
+}
+
+public void setName(String name) {
+	this.name = name;
+}
+
+public char getGender() {
+	return gender;
+}
+
+public void setGender(char gender) {
+	this.gender = gender;
+}
+
+public int getSalary() {
+	return salary;
+}
+
+public void setSalary(int salary) {
+	this.salary = salary;
+}
+
+public Date getStart_Date() {
+	return start_Date;
+}
+
+public void setStart_Date(Date start_Date) {
+	this.start_Date = start_Date;
+}
+
+@Override
+public String toString() {
+	return "Employee [id=" + id + ", name=" + name + ", gender=" + gender + ", salary=" + salary + ", start_Date="
+			+ start_Date + "]";
+}
+
+
+}
