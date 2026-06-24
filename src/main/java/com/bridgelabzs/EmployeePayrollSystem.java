@@ -38,7 +38,18 @@ public List<Employee> readEmployeeData(){
 	for(Employee emp:emplist) {
 		System.out.println(emp);
 	}
-	return emplist;
+	return emplist;	
+}
+public int updateAnSqlERecord() {
+	int n=-1;
+   try {
+	Connection con=DBConnection.getConnection();
+	Statement st=con.createStatement();
+	n=st.executeUpdate("update employee_payroll set salary=30000 where name='Tanuja' ");
+} catch (EmployeePayRollException | SQLException e) {
 	
+	e.printStackTrace();
+}
+ return n;  
 }
 }
