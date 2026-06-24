@@ -8,7 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EmployeePayrollSystem {
 
@@ -103,5 +105,25 @@ public List<Employee> getEmployeesBetweenDates(Date from,Date to){
 	
 	
 	return emplist;
+}
+public Map<Character,Integer> getSumOfTheSalariesOfFemaleEmployees(){
+	Map<Character,Integer> employeemap=new LinkedHashMap<>();
+	String getSumOfTheSalariesOfFemaleEmployeesVariable="select gender,sum(salary) from employee_payroll where gender='F' GROUP BY gender";
+	try {
+		Connection con=DBConnection.getConnection();
+		PreparedStatement ps=con.prepareStatement(getSumOfTheSalariesOfFemaleEmployeesVariable);
+		ResultSet set=ps.executeQuery();
+		if(set.next()) {
+			employeemap.put(set.getString(1).charAt(0),set.getInt(2));
+		}
+
+		
+	} catch (EmployeePayRollException | SQLException e) {
+		
+		e.printStackTrace();
+	}
+	
+	
+	return employeemap;
 }
 }

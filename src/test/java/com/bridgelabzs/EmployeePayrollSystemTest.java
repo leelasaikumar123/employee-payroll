@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Date;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -49,6 +51,13 @@ class EmployeePayrollSystemTest {
 		EmployeePayrollSystem eps=new EmployeePayrollSystem();
 		List<Employee> actaul=eps.getEmployeesBetweenDates(Date.valueOf("1970-01-01"),Date.valueOf("2027-01-01"));
 		assertEquals(expected,actaul);
+	}
+	@Test
+	void getSumOfTheSalariesOfFemaleEmployeesTest() {
+		Map<Character,Integer> expected=new LinkedHashMap<>();
+		expected.put('F', 120000);
+		EmployeePayrollSystem eps=new EmployeePayrollSystem();
+		assertEquals(expected, eps.getSumOfTheSalariesOfFemaleEmployees());
 	}
 	
 }
