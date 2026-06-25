@@ -152,4 +152,39 @@ public Employee addEmployeeToPayroll(String name,char gender,int salary,Date sta
 	
 	return emp;
 }
+public int addEmployeeToPayrollAndPayrollDetails(String name,char gender,int salary,Date start_Date) {
+int n=-1;
+Connection con=null;
+String addEmployeeToPayrollVariable="insert into employee_payroll(name,gender,salary,start_Date) values(?,?,?,?)";
+try {
+	con=DBConnection.getConnection();
+	 con=DBConnection.getConnection();
+	PreparedStatement pr=con.prepareStatement(addEmployeeToPayrollVariable,PreparedStatement.RETURN_GENERATED_KEYS);
+	pr.setString(1, name);
+	pr.setString(2,String.valueOf(gender));
+	pr.setInt(3, salary);
+	pr.setDate(4, start_Date);
+	 if(pr.executeUpdate()>0) {
+			ResultSet res=pr.getGeneratedKeys();
+			res.next();
+			int id = res.getInt(1);
+			double deductions=salary*0.2;
+			double taxablePay=salary-deductions;
+			double tax=taxablePay*0.1;
+			double netPay=salary-tax;
+			PreparedStatement pr2=con.prepareStatement("insert into payroll_details values(?,?,?,?,?,?)");
+			pr2.setInt(1, id);
+			pr2.setDouble(2, salary);
+			pr2.setDouble(3, deductions);
+			pr2.setDouble(4, taxablePay);
+			pr2.setDouble(5, tax);
+			pr2.setDouble(6, netPay);
+			n=pr2.executeUpdate();
+	 }
+} catch (EmployeePayRollException | SQLException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+}
+return n;
+}
 }

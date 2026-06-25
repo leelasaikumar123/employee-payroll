@@ -66,4 +66,11 @@ class EmployeePayrollSystemTest {
 		Employee actual=eps.addEmployeeToPayroll("Vinod",'M',40000,Date.valueOf("2025-09-19"));
 		assertEquals(expected,actual);
 	}	
+	@Test
+	void addEmployeeToPayrollAndPayrollDetailsTest() {
+		EmployeePayrollSystem eps=new EmployeePayrollSystem();
+		int actual=eps.addEmployeeToPayrollAndPayrollDetails("Vinod",'M',40000,Date.valueOf("2025-09-19"));
+		int expected=1;
+		assertEquals(expected,actual);
+	}
 }
