@@ -126,4 +126,30 @@ public Map<Character,Integer> getSumOfTheSalariesOfFemaleEmployees(){
 	
 	return employeemap;
 }
+public Employee addEmployeeToPayroll(String name,char gender,int salary,Date start_Date) {
+	Employee emp=null;
+	String addEmployeeToPayrollVariable="insert into employee_payroll(name,gender,salary,start_Date) values(?,?,?,?)";
+	
+	try {
+		Connection con=DBConnection.getConnection();
+		PreparedStatement pr=con.prepareStatement(addEmployeeToPayrollVariable,PreparedStatement.RETURN_GENERATED_KEYS);
+		pr.setString(1, name);
+		pr.setString(2,String.valueOf(gender));
+		pr.setInt(3, salary);
+		pr.setDate(4, start_Date);
+		int n=pr.executeUpdate();
+		if(n>0) {
+			ResultSet res=pr.getGeneratedKeys();
+			res.next();
+			int id = res.getInt(1);
+			emp=new Employee(id,name,gender,salary,start_Date);
+		}
+		con.close();
+		pr.close();
+	} catch (EmployeePayRollException | SQLException e) {		
+		e.printStackTrace();
+	}
+	
+	return emp;
+}
 }

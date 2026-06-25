@@ -59,5 +59,11 @@ class EmployeePayrollSystemTest {
 		EmployeePayrollSystem eps=new EmployeePayrollSystem();
 		assertEquals(expected, eps.getSumOfTheSalariesOfFemaleEmployees());
 	}
-	
+	@Test
+	void addEmployeeToPayrollTest() {
+		EmployeePayrollSystem eps=new EmployeePayrollSystem();
+		Employee expected=new Employee(12,"Vinod",'M',40000,Date.valueOf("2025-09-19"));
+		Employee actual=eps.addEmployeeToPayroll("Vinod",'M',40000,Date.valueOf("2025-09-19"));
+		assertEquals(expected,actual);
+	}	
 }
