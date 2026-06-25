@@ -158,7 +158,7 @@ Connection con=null;
 String addEmployeeToPayrollVariable="insert into employee_payroll(name,gender,salary,start_Date) values(?,?,?,?)";
 try {
 	con=DBConnection.getConnection();
-	 con=DBConnection.getConnection();
+	con.setAutoCommit(false);
 	PreparedStatement pr=con.prepareStatement(addEmployeeToPayrollVariable,PreparedStatement.RETURN_GENERATED_KEYS);
 	pr.setString(1, name);
 	pr.setString(2,String.valueOf(gender));
@@ -180,10 +180,25 @@ try {
 			pr2.setDouble(5, tax);
 			pr2.setDouble(6, netPay);
 			n=pr2.executeUpdate();
+			con.commit();
 	 }
 } catch (EmployeePayRollException | SQLException e) {
 	// TODO Auto-generated catch block
+  try {
+	con.rollback();
+} catch (SQLException e1) {
+	// TODO Auto-generated catch block
+	e1.printStackTrace();
+}
 	e.printStackTrace();
+}
+finally {
+	try {
+		con.close();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 }
 return n;
 }
