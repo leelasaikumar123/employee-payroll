@@ -95,4 +95,12 @@ class EmployeePayrollSystemTest {
 		EmployeePayrollSystem eps=new EmployeePayrollSystem();
 		assertEquals(expected,eps.getMinimumSalary());
 	}
+@Test
+void addEmployeeTest() {
+	EmployeePayrollSystem eps=new EmployeePayrollSystem();
+	List<String> departments=Arrays.asList("HR","Sales");
+	Employee expected=new Employee(6,"Vinod",'M',50000,Date.valueOf("2025-09-17"));
+	Employee actual=eps.addEmployeeUC11("Vinod",'M',"9876543210","Guntur",Date.valueOf("2025-09-17"),50000,departments);
+	assertEquals(expected,actual);
+}	
 }

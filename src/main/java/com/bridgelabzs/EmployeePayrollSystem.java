@@ -312,6 +312,78 @@ public int addEmployee(String name,char gender,String phone,String address,Date 
 	}
 	return n;
 }
+public Employee addEmployeeUC11(String name,char gender,String phone,String address,Date start_Date,int basicPay,List<String> departments) {
+	Employee emp=null;
+	Connection con=null;
+	try {
+		con=DBConnection2.getConnection();
+		con.setAutoCommit(false);
+		String addEmployeeVariable="insert into employee(name,gender,phone_number,address,start_Date) values(?,?,?,?,?)";
+		PreparedStatement pr=con.prepareStatement(addEmployeeVariable,PreparedStatement.RETURN_GENERATED_KEYS);
+		pr.setString(1,name);
+		pr.setString(2,String.valueOf(gender));
+		pr.setString(3,phone);
+		pr.setString(4,address);
+		pr.setDate(5,start_Date);
+		pr.executeUpdate();
+		ResultSet res=pr.getGeneratedKeys();
+		res.next();
+		int employeeId=res.getInt(1);
+		int deductions=(basicPay*20)/100;
+		int taxablePay=basicPay-deductions;
+		int tax=(taxablePay*10)/100;
+		int netPay=basicPay-tax;
+		PreparedStatement pr2=con.prepareStatement("insert into payroll values(?,?,?,?,?,?)");
+		pr2.setInt(1,employeeId);
+		pr2.setInt(2,basicPay);
+		pr2.setInt(3,deductions);
+		pr2.setInt(4,taxablePay);
+		pr2.setInt(5,tax);
+		pr2.setInt(6,netPay);
+		pr2.executeUpdate();
+		for(String department:departments) {
+			int deptId=-1;
+			PreparedStatement pr3=con.prepareStatement("select dept_id from department where dept_name=?");
+			pr3.setString(1,department);
+			ResultSet set=pr3.executeQuery();
+			if(set.next()) {
+				deptId=set.getInt(1);
+			}
+			else {
+				PreparedStatement pr4=con.prepareStatement("insert into department(dept_name) values(?)",PreparedStatement.RETURN_GENERATED_KEYS);
+				pr4.setString(1,department);
+				pr4.executeUpdate();
+				ResultSet set2=pr4.getGeneratedKeys();
+				set2.next();
+				deptId=set2.getInt(1);
+			}
+			PreparedStatement pr5=con.prepareStatement("insert into employee_department values(?,?)");
+			pr5.setInt(1,employeeId);
+			pr5.setInt(2,deptId);
+			pr5.executeUpdate();
+		}
+		con.commit();	
+		emp=new Employee(employeeId,name,gender,basicPay,start_Date);
 
+	}
+	catch(EmployeePayRollException | SQLException e) {
+		try {
+			con.rollback();
+		}
+		catch(SQLException e1) {
+			e1.printStackTrace();
+		}
+		e.printStackTrace();
+	}
+	finally {
+		try {
+			con.close();
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
+	return emp;
+}
 }
