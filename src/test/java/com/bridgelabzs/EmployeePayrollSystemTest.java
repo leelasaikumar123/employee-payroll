@@ -73,4 +73,12 @@ class EmployeePayrollSystemTest {
 		int expected=1;
 		assertEquals(expected,actual);
 	}
+	@Test
+	void addEmployeeTest() {
+		EmployeePayrollSystem eps=new EmployeePayrollSystem();
+		List<String> departments=Arrays.asList("HR","Sales");
+		int actual=eps.addEmployee("Nagur",'M',"9876543210","Guntur",Date.valueOf("2025-09-17"),50000,departments);
+		int expected=1;
+		assertEquals(expected,actual);
+	}
 }
