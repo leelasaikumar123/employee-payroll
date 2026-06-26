@@ -11,7 +11,6 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class EmployeePayrollSystemTest {
-
 	@Test
 	void printEmployeeDataTest() {
 		EmployeePayrollSystem eps=new EmployeePayrollSystem();
@@ -99,8 +98,15 @@ class EmployeePayrollSystemTest {
 void addEmployeeTest() {
 	EmployeePayrollSystem eps=new EmployeePayrollSystem();
 	List<String> departments=Arrays.asList("HR","Sales");
-	Employee expected=new Employee(6,"Vinod",'M',50000,Date.valueOf("2025-09-17"));
+	Employee expected=new Employee(10,"Vinod",'M',50000,Date.valueOf("2025-09-17"));
 	Employee actual=eps.addEmployeeUC11("Vinod",'M',"9876543210","Guntur",Date.valueOf("2025-09-17"),50000,departments);
 	assertEquals(expected,actual);
 }	
+	@Test
+void removeEmployeeTest() {
+	EmployeePayrollSystem eps=new EmployeePayrollSystem();
+	int actual=eps.removeEmployee("Vinod");
+	int expected=1;
+	assertEquals(expected,actual);
+}
 }

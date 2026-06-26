@@ -8,7 +8,7 @@ private String name;
 private char gender;
 private int salary;
 private Date start_Date;
-
+private boolean isActive;
 public Employee() {
 	super();
 }
@@ -19,6 +19,7 @@ public Employee(int id, String name, char gender, int salary, Date start_Date) {
 	this.gender = gender;
 	this.salary = salary;
 	this.start_Date = start_Date;
+	this.isActive=true;
 }
 
 public int getId() {
@@ -60,16 +61,23 @@ public Date getStart_Date() {
 public void setStart_Date(Date start_Date) {
 	this.start_Date = start_Date;
 }
+public boolean isActive() {
+	return isActive;
+}
+
+public void setActive(boolean isActive) {
+	this.isActive=isActive;
+}
 
 @Override
 public String toString() {
 	return "Employee [id=" + id + ", name=" + name + ", gender=" + gender + ", salary=" + salary + ", start_Date="
-			+ start_Date + "]";
+			+ start_Date + ",isActive=" + isActive + "]";
 }
 	@Override
 		public boolean equals(Object obj) {
 			Employee emp2=(Employee) obj;
-			return emp2.getId()==id && emp2.getGender()==gender && start_Date.equals(emp2.start_Date) && emp2.getSalary()==salary;
+			return emp2.getId()==id && emp2.getGender()==gender && start_Date.equals(emp2.start_Date) && emp2.getSalary()==salary && emp2.isActive()==isActive;
 		}
 	
 	}

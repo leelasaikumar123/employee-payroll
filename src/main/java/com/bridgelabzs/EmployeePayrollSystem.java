@@ -1,5 +1,4 @@
 package com.bridgelabzs;
-
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -28,7 +27,7 @@ public class EmployeePayrollSystem {
 
 public List<Employee> readEmployeeData(){
 		List<Employee> emplist=new ArrayList<>();
-		String readEmployeeDataVariable="select e.id,e.name,e.gender,p.basic_pay,e.start_Date from employee e join payroll p on e.id=p.employee_id";
+		String readEmployeeDataVariable="select e.id,e.name,e.gender,p.basic_pay,e.start_Date from employee e join payroll p on e.id=p.employee_id where e.is_active=true;";
 		try {
 			Connection con=DBConnection2.getConnection();
 			PreparedStatement pr=con.prepareStatement(readEmployeeDataVariable);
@@ -46,7 +45,7 @@ public List<Employee> readEmployeeData(){
 
 public int updateAnSqlERecord() {
 	int n=-1;
-	String updateSalaryVariable="update payroll p join employee e on p.employee_id=e.id set p.basic_pay=30000 where e.name='Tanuja'";
+	String updateSalaryVariable="update payroll p join employee e on p.employee_id=e.id set p.basic_pay=30000 where e.name='Tanuja' and e.is_active=true;";
 	try {
 		Connection con=DBConnection2.getConnection();
 		Statement st=con.createStatement();
@@ -60,7 +59,7 @@ public int updateAnSqlERecord() {
 
 public int updateAnSqlERecordUsingPreparedStatement() {
 	int n=-1;
-	String updateSalaryVariable="update payroll p join employee e on p.employee_id=e.id set p.basic_pay=? where e.name=?";
+	String updateSalaryVariable="update payroll p join employee e on p.employee_id=e.id set p.basic_pay=? where e.name=? and e.is_active=true;";
 	try {
 		Connection con=DBConnection2.getConnection();
 		PreparedStatement pr=con.prepareStatement(updateSalaryVariable);
@@ -76,7 +75,7 @@ public int updateAnSqlERecordUsingPreparedStatement() {
 
 public Employee getEmployeePayrollDataByName() {
 	Employee emp=null;
-	String getEmployeePayrollDataByNameVariable="select e.id,e.name,e.gender,p.basic_pay,e.start_Date from employee e join payroll p on e.id=p.employee_id where e.name=?";
+	String getEmployeePayrollDataByNameVariable="select e.id,e.name,e.gender,p.basic_pay,e.start_Date from employee e join payroll p on e.id=p.employee_id where e.name=? and e.is_active=true;";
 	try {
 		Connection con=DBConnection2.getConnection();
 		PreparedStatement pr=con.prepareStatement(getEmployeePayrollDataByNameVariable);
@@ -94,7 +93,7 @@ public Employee getEmployeePayrollDataByName() {
 
 public List<Employee> getEmployeesBetweenDates(Date from,Date to){
 	List<Employee> emplist=new ArrayList<>();
-	String getEmployeesBetweenDatesVariable="select e.id,e.name,e.gender,p.basic_pay,e.start_Date from employee e join payroll p on e.id=p.employee_id where e.start_Date between ? and ?";
+	String getEmployeesBetweenDatesVariable="select e.id,e.name,e.gender,p.basic_pay,e.start_Date from employee e join payroll p on e.id=p.employee_id where e.start_Date between ? and ? and e.is_active=true;";
 	try {
 		Connection con=DBConnection2.getConnection();
 		PreparedStatement pr=con.prepareStatement(getEmployeesBetweenDatesVariable);
@@ -113,7 +112,7 @@ public List<Employee> getEmployeesBetweenDates(Date from,Date to){
 
 public Map<Character,Integer> getSumOfTheSalariesOfFemaleEmployees(){
 	Map<Character,Integer> employeemap=new LinkedHashMap<>();
-	String getSumVariable="select e.gender,sum(p.basic_pay) from employee e join payroll p on e.id=p.employee_id where e.gender='F' group by e.gender";
+	String getSumVariable="select e.gender,sum(p.basic_pay) from employee e join payroll p on e.id=p.employee_id where e.gender='F' and e.is_active=true group by e.gender;";
 	try {
 		Connection con=DBConnection2.getConnection();
 		PreparedStatement pr=con.prepareStatement(getSumVariable);
@@ -130,7 +129,7 @@ public Map<Character,Integer> getSumOfTheSalariesOfFemaleEmployees(){
 
 public Map<Character,Double> getAverageSalary(){
 	Map<Character,Double> employeemap=new LinkedHashMap<>();
-	String getAverageSalaryVariable="select e.gender,avg(p.basic_pay) from employee e join payroll p on e.id=p.employee_id group by e.gender";
+	String getAverageSalaryVariable="select e.gender,avg(p.basic_pay) from employee e join payroll p on e.id=p.employee_id where e.is_active=true group by e.gender;";
 	try {
 		Connection con=DBConnection2.getConnection();
 		PreparedStatement pr=con.prepareStatement(getAverageSalaryVariable);
@@ -147,7 +146,7 @@ public Map<Character,Double> getAverageSalary(){
 
 public Map<Character,Integer> getMinimumSalary(){
 	Map<Character,Integer> employeemap=new LinkedHashMap<>();
-	String getMinimumSalaryVariable="select e.gender,min(p.basic_pay) from employee e join payroll p on e.id=p.employee_id group by e.gender";
+	String getMinimumSalaryVariable="select e.gender,min(p.basic_pay) from employee e join payroll p on e.id=p.employee_id where e.is_active=true group by e.gender;";
 	try {
 		Connection con=DBConnection2.getConnection();
 		PreparedStatement pr=con.prepareStatement(getMinimumSalaryVariable);
@@ -385,5 +384,19 @@ public Employee addEmployeeUC11(String name,char gender,String phone,String addr
 	}
 
 	return emp;
+}
+public int removeEmployee(String name) {
+	int n=-1;
+	String removeEmployeeVariable="update employee set is_active=false where name=?";
+	try {
+		Connection con=DBConnection2.getConnection();
+		PreparedStatement pr=con.prepareStatement(removeEmployeeVariable);
+		pr.setString(1,name);
+		n=pr.executeUpdate();
+	}
+	catch(EmployeePayRollException | SQLException e) {
+		e.printStackTrace();
+	}
+	return n;
 }
 }
