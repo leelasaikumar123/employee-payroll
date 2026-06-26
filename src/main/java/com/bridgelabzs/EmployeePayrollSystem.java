@@ -27,103 +27,138 @@ public class EmployeePayrollSystem {
 	}
 
 public List<Employee> readEmployeeData(){
-	List<Employee> emplist=new ArrayList<>();
-	try {
-		Connection con=DBConnection.getConnection();
-		Statement st=con.createStatement();
-		ResultSet res=st.executeQuery("select * from employee_payroll");
-		while(res.next()) {
-			emplist.add(new Employee(res.getInt(1), res.getString(2),res.getString(3).charAt(0), res.getInt(4),res.getDate(5)));
+		List<Employee> emplist=new ArrayList<>();
+		String readEmployeeDataVariable="select e.id,e.name,e.gender,p.basic_pay,e.start_Date from employee e join payroll p on e.id=p.employee_id";
+		try {
+			Connection con=DBConnection2.getConnection();
+			PreparedStatement pr=con.prepareStatement(readEmployeeDataVariable);
+			ResultSet res=pr.executeQuery();
+			while(res.next()) {
+				emplist.add(new Employee(res.getInt(1),res.getString(2),res.getString(3).charAt(0),res.getInt(4),res.getDate(5)));
+			}
 		}
-	} catch (EmployeePayRollException | SQLException e) {
-		
-		e.printStackTrace();
+		catch(EmployeePayRollException | SQLException e) {
+			e.printStackTrace();
+		}
+		return emplist;
 	}
-	for(Employee emp:emplist) {
-		System.out.println(emp);
-	}
-	return emplist;	
-}
+
+
 public int updateAnSqlERecord() {
 	int n=-1;
-   try {
-	Connection con=DBConnection.getConnection();
-	Statement st=con.createStatement();
-	n=st.executeUpdate("update employee_payroll set salary=30000 where name='Tanuja' ");
-} catch (EmployeePayRollException | SQLException e) {
-	
-	e.printStackTrace();
+	String updateSalaryVariable="update payroll p join employee e on p.employee_id=e.id set p.basic_pay=30000 where e.name='Tanuja'";
+	try {
+		Connection con=DBConnection2.getConnection();
+		Statement st=con.createStatement();
+		n=st.executeUpdate(updateSalaryVariable);
+	}
+	catch(EmployeePayRollException | SQLException e) {
+		e.printStackTrace();
+	}
+	return n;
 }
- return n;  
-}
+
 public int updateAnSqlERecordUsingPreparedStatement() {
 	int n=-1;
-   try {
-	Connection con=DBConnection.getConnection();
-	PreparedStatement ps=con.prepareStatement("update employee_payroll set salary=30000 where name='Tanuja' ");
-	n=ps.executeUpdate();
-} catch (EmployeePayRollException | SQLException e) {
-	
-	e.printStackTrace();
+	String updateSalaryVariable="update payroll p join employee e on p.employee_id=e.id set p.basic_pay=? where e.name=?";
+	try {
+		Connection con=DBConnection2.getConnection();
+		PreparedStatement pr=con.prepareStatement(updateSalaryVariable);
+		pr.setInt(1,30000);
+		pr.setString(2,"Tanuja");
+		n=pr.executeUpdate();
+	}
+	catch(EmployeePayRollException | SQLException e) {
+		e.printStackTrace();
+	}
+	return n;
 }
- return n;  
-}
+
 public Employee getEmployeePayrollDataByName() {
 	Employee emp=null;
-	String retriveEmployeeByNameQuery="select * from employee_payroll where name = ?";
-   try {
-	Connection con=DBConnection.getConnection();
-	PreparedStatement ps=con.prepareStatement(retriveEmployeeByNameQuery);
-	ps.setString(1,"Tanuja");
-	ResultSet res=ps.executeQuery();
-	res.next();
-	emp=new Employee(res.getInt(1), res.getString(2),res.getString(3).charAt(0), res.getInt(4),res.getDate(5));
-	
-} catch (EmployeePayRollException | SQLException e) {
-	
-	e.printStackTrace();
+	String getEmployeePayrollDataByNameVariable="select e.id,e.name,e.gender,p.basic_pay,e.start_Date from employee e join payroll p on e.id=p.employee_id where e.name=?";
+	try {
+		Connection con=DBConnection2.getConnection();
+		PreparedStatement pr=con.prepareStatement(getEmployeePayrollDataByNameVariable);
+		pr.setString(1,"Tanuja");
+		ResultSet res=pr.executeQuery();
+		if(res.next()) {
+			emp=new Employee(res.getInt(1),res.getString(2),res.getString(3).charAt(0),res.getInt(4),res.getDate(5));
+		}
+	}
+	catch(EmployeePayRollException | SQLException e) {
+		e.printStackTrace();
+	}
+	return emp;
 }
- return emp;  
-}
+
 public List<Employee> getEmployeesBetweenDates(Date from,Date to){
 	List<Employee> emplist=new ArrayList<>();
-	String getEmployeesBetweenDatesVariable="select * from employee_payroll where start_Date between ? and ?";
+	String getEmployeesBetweenDatesVariable="select e.id,e.name,e.gender,p.basic_pay,e.start_Date from employee e join payroll p on e.id=p.employee_id where e.start_Date between ? and ?";
 	try {
-		Connection con=DBConnection.getConnection();
-		PreparedStatement ps=con.prepareStatement(getEmployeesBetweenDatesVariable);
-		ps.setDate(1, from);
-		ps.setDate(2, to);
-		ResultSet res=ps.executeQuery();
+		Connection con=DBConnection2.getConnection();
+		PreparedStatement pr=con.prepareStatement(getEmployeesBetweenDatesVariable);
+		pr.setDate(1,from);
+		pr.setDate(2,to);
+		ResultSet res=pr.executeQuery();
 		while(res.next()) {
-			emplist.add(new Employee(res.getInt(1), res.getString(2),res.getString(3).charAt(0), res.getInt(4),res.getDate(5)));
+			emplist.add(new Employee(res.getInt(1),res.getString(2),res.getString(3).charAt(0),res.getInt(4),res.getDate(5)));
 		}
-		
-	} catch (EmployeePayRollException | SQLException e) {
-		
+	}
+	catch(EmployeePayRollException | SQLException e) {
 		e.printStackTrace();
 	}
-	
-	
 	return emplist;
 }
+
 public Map<Character,Integer> getSumOfTheSalariesOfFemaleEmployees(){
 	Map<Character,Integer> employeemap=new LinkedHashMap<>();
-	String getSumOfTheSalariesOfFemaleEmployeesVariable="select gender,sum(salary) from employee_payroll where gender='F' GROUP BY gender";
+	String getSumVariable="select e.gender,sum(p.basic_pay) from employee e join payroll p on e.id=p.employee_id where e.gender='F' group by e.gender";
 	try {
-		Connection con=DBConnection.getConnection();
-		PreparedStatement ps=con.prepareStatement(getSumOfTheSalariesOfFemaleEmployeesVariable);
-		ResultSet set=ps.executeQuery();
-		if(set.next()) {
-			employeemap.put(set.getString(1).charAt(0),set.getInt(2));
+		Connection con=DBConnection2.getConnection();
+		PreparedStatement pr=con.prepareStatement(getSumVariable);
+		ResultSet res=pr.executeQuery();
+		if(res.next()) {
+			employeemap.put(res.getString(1).charAt(0),res.getInt(2));
 		}
-
-		
-	} catch (EmployeePayRollException | SQLException e) {
-		
+	}
+	catch(EmployeePayRollException | SQLException e) {
 		e.printStackTrace();
 	}
-	
-	
+	return employeemap;
+}
+
+public Map<Character,Double> getAverageSalary(){
+	Map<Character,Double> employeemap=new LinkedHashMap<>();
+	String getAverageSalaryVariable="select e.gender,avg(p.basic_pay) from employee e join payroll p on e.id=p.employee_id group by e.gender";
+	try {
+		Connection con=DBConnection2.getConnection();
+		PreparedStatement pr=con.prepareStatement(getAverageSalaryVariable);
+		ResultSet res=pr.executeQuery();
+		while(res.next()) {
+			employeemap.put(res.getString(1).charAt(0),res.getDouble(2));
+		}
+	}
+	catch(EmployeePayRollException | SQLException e) {
+		e.printStackTrace();
+	}
+	return employeemap;
+}
+
+public Map<Character,Integer> getMinimumSalary(){
+	Map<Character,Integer> employeemap=new LinkedHashMap<>();
+	String getMinimumSalaryVariable="select e.gender,min(p.basic_pay) from employee e join payroll p on e.id=p.employee_id group by e.gender";
+	try {
+		Connection con=DBConnection2.getConnection();
+		PreparedStatement pr=con.prepareStatement(getMinimumSalaryVariable);
+		ResultSet res=pr.executeQuery();
+		while(res.next()) {
+			employeemap.put(res.getString(1).charAt(0),res.getInt(2));
+		}
+	}
+	catch(EmployeePayRollException | SQLException e) {
+		e.printStackTrace();
+	}
 	return employeemap;
 }
 public Employee addEmployeeToPayroll(String name,char gender,int salary,Date start_Date) {
@@ -131,7 +166,7 @@ public Employee addEmployeeToPayroll(String name,char gender,int salary,Date sta
 	String addEmployeeToPayrollVariable="insert into employee_payroll(name,gender,salary,start_Date) values(?,?,?,?)";
 	
 	try {
-		Connection con=DBConnection.getConnection();
+		Connection con=DBConnection2.getConnection();
 		PreparedStatement pr=con.prepareStatement(addEmployeeToPayrollVariable,PreparedStatement.RETURN_GENERATED_KEYS);
 		pr.setString(1, name);
 		pr.setString(2,String.valueOf(gender));
@@ -277,4 +312,6 @@ public int addEmployee(String name,char gender,String phone,String address,Date 
 	}
 	return n;
 }
+
+
 }
